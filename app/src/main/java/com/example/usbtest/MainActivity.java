@@ -113,6 +113,26 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
         initialize();
     }
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        registerReceiver();
+    }
+
+    @Override
+    public void onPause() {
+        if (connected) {
+            status("disconnected");
+            disconnect();
+        }
+        if (broadcastReceiver != null) {
+            unregisterReceiver(broadcastReceiver);
+            broadcastReceiver = null;
+        }
+        super.onPause();
+    }
+
     public void initialize() {
         // Initialize USB Manager
         usbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
@@ -184,25 +204,6 @@ public class MainActivity extends AppCompatActivity implements SerialInputOutput
         }
     }
 
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        registerReceiver();
-    }
-
-    @Override
-    public void onPause() {
-        if (connected) {
-            status("disconnected");
-            disconnect();
-        }
-        if (broadcastReceiver != null) {
-            unregisterReceiver(broadcastReceiver);
-            broadcastReceiver = null;
-        }
-        super.onPause();
-    }
 
     /*
      * Serial
